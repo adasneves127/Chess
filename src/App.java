@@ -1,11 +1,14 @@
-
 public class App {
 
+    //Create our width, height, res, and size variables.
     public static int width, height, res, size;
+
+    //This is the board.
     public static BoardComponent boardComp;
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
+        
+        //If we supplied any arguments, try to parse them. If we fail, default to the default values.
         try{
             width = Integer.parseInt(args[0]);
             height = width;
@@ -17,9 +20,7 @@ public class App {
             size = 8;
             res = width / size;
         }
+        //Start our game
         boardComp = new BoardComponent(width, height, size);
-
-       
-        
     }
 }

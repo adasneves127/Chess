@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.Color;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 public class BoardComponent extends JPanel{
@@ -10,8 +12,11 @@ public class BoardComponent extends JPanel{
     public JFrame window;
 
     public static Piece[][] board = new Piece[8][8];
+    public static boolean whiteTurn = true;
 
     public static int scl;
+
+    public static King whiteKing, blackKing;
 
     public BoardComponent(int width, int height, int size){
         scl = width / size;
@@ -29,14 +34,14 @@ public class BoardComponent extends JPanel{
     public void setupBoard(){
         // setup board
         // White Side
-        board[0][0] = new Rook(0,0,true);
+        board[0][0] = new   Rook(0,0,true);
         board[1][0] = new Knight(1,0,true);
         board[2][0] = new Bishop(2,0,true);
-        board[3][0] = new Queen(3,0,true);
-        board[4][0] = new King(4,0,true);
+        board[3][0] = new  Queen(3,0,true);
+        board[4][0] = new   King(4,0,true);
         board[5][0] = new Bishop(5,0,true);
         board[6][0] = new Knight(6,0,true);
-        board[7][0] = new Rook(7,0,true);
+        board[7][0] = new   Rook(7,0,true);
         for(int i = 0; i < size; i++){
             board[i][1] = new Pawn(1,i,true);
         }
@@ -45,14 +50,18 @@ public class BoardComponent extends JPanel{
         for(int i = 0; i < size; i++){
             board[i][6] = new Pawn(i,6,false);
         }
-        board[0][7] = new Rook(0,7,false);
+
+        board[0][7] = new   Rook(0,7,false);
         board[1][7] = new Knight(1,7,false);
         board[2][7] = new Bishop(2,7,false);
-        board[3][7] = new Queen(3,7,false);
-        board[4][7] = new King(4,7,false);
+        board[3][7] = new  Queen(3,7,false);
+        board[4][7] = new   King(4,7,false);
         board[5][7] = new Bishop(5,7,false);
         board[6][7] = new Knight(6,7,false);
-        board[7][7] = new Rook(7,7,false);
+        board[7][7] = new   Rook(7,7,false);
+
+        whiteKing = (King)board[4][0];
+        blackKing = (King)board[4][7];
     }
 
     public void setupWindow(){
@@ -91,13 +100,55 @@ public class BoardComponent extends JPanel{
             for(int j = 0; j < size; j++){
                 if(board[i][j] != null){
                     board[i][j].draw(g, (int)((i * res) + 0.1 * res), (int)((j * res) + 0.2 * res));
+                    
+                }   
+            }
+        }
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                if(board[j][i] != null){
+                    System.out.print(board[j][i].type + " ");
+                }
+                else{
+                    System.out.print("  ");
                 }
             }
+            System.out.println();
         }
     }
 
     public void onPieceMove(){
         this.repaint();
+        if(checkForCheck(!whiteTurn)){
+            System.out.println("Check!");
+        }
     }
 
+    public boolean checkForCheck(Boolean color){
+
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(board[j][i] != null){
+                    Piece currentPiece = board[j][i];
+                    if(currentPiece.isWhite != color){
+                       ArrayList<int[]> moves = Piece.getAllMoves(currentPiece.x, currentPiece.y, currentPiece.type, board);
+
+                       for(int[] move : moves){
+                           if(color){
+                               if(move[0] == whiteKing.x && move[1] == whiteKing.y){
+                                   return true;
+                               }
+                           }
+                           else{
+                               if(move[0] == blackKing.x && move[1] == blackKing.y){
+                                   return true;
+                               }
+                           }
+                       }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

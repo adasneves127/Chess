@@ -14,8 +14,21 @@ public class BoardMouseListener implements MouseListener {
 
         if(BoardComponent.board[clickedX][clickedY] == null)
             return;
+            
+        if(BoardComponent.board[clickedX][clickedY].isWhite != BoardComponent.whiteTurn){
+            return;
+        }
 
-        if(Piece.validateMove(BoardComponent.board, clickedX, clickedY, relX, relY)){
+        
+
+        boolean isValid = Piece.validateMove(BoardComponent.board, clickedX, clickedY, relX, relY);
+
+        System.err.println("Validate Move returned: " + isValid);
+
+        BoardComponent.whiteTurn = isValid ^ BoardComponent.whiteTurn;
+
+
+        if(isValid){
             Piece.move(BoardComponent.board, clickedX, clickedY, relX, relY);
             App.boardComp.onPieceMove();
         }

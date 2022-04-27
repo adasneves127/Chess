@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+//Bishop piece
 public class Bishop extends Piece {
     public Bishop(int x, int y, Boolean color) {
         super(x, y, color);
